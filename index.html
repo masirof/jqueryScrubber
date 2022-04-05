@@ -1,10 +1,87 @@
+<!-- Bootstrap Icons(https://github.com/twbs/icons)
+Copyright (c) 2011-2022 The Bootstrap Authors
+Licensed under MIT(https://github.com/jgthms/bulma/blob/master/LICENSE) -->
+
+
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
-    <title>My test page</title>
+    <title>jqueryScrubber</title>
   </head>
   <body>
-    <h1>hello world<h1>
+    <h1>jquery Scrubber<h1>
+    <h2>Please drag number label<h2>
+    <div class="scrubber_flex" id="scrubber_div_number">
+      <label class="scrubber_label" for="scrubber_number">number</label>
+      <input type="number" id="scrubber_number" class="scrubber_number" maxlength="4" size="1" name="scrubber_number" step="50" value="0">
+      </input>
+    </div>
   </body>
 </html>
+
+<style>
+  body{
+    margin: 50px;
+  }
+
+  .scrubber_flex{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* number: 55px; */
+    margin: auto;
+    border: 1px;
+  }
+
+  .scrubber_label{
+    cursor: ew-resize;
+    user-select: none;
+  }
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+  console.log('hello')
+  drag_mater()
+
+  function drag_mater() {
+    // クリック→クリック時点の距離→クリック中→クリック外す→クリック外したときの距離
+    // ドラッグしているときの距離
+    var mouse_x
+    var is_mouse_down_number
+    var number_num
+
+    // マウスを押下
+    // どの座標でマウスを下げたか
+    $("label[for='scrubber_number']").mousedown(function () {
+        $("body").css({"pointer-events": "none"}) //クリック判定停止
+        mouse_x = event.clientX
+        is_mouse_down_number = 1
+    })
+
+    // マウスを押下している間
+    $(window).mousemove(function () {
+        if (is_mouse_down_number == 1) {
+            getnum_mouse_x = event.clientX
+            // 値を取得する
+            number_num = Number($("#scrubber_number").val())
+            if (getnum_mouse_x != mouse_x) {
+                rel_x = getnum_mouse_x-mouse_x
+                // 値を変更
+                $("#scrubber_number").val(rel_x+number_num).change()
+                mouse_x = getnum_mouse_x
+            }
+        }
+    })
+
+    // マウスを押上
+    // どこでマウスを上げたか
+    $(window).mouseup(function(){
+        if (is_mouse_down_number == 1) {
+            $("body").css({"pointer-events": "all"})//クリック判定再開
+            is_mouse_down_number=0
+        }
+    })
+  }
+</script>
